@@ -1,5 +1,5 @@
 {
-  "name": "근무 시간 캘린더",
+  "name": "근무시간캘린더",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#f5f6f8",
