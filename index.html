@@ -1,350 +1,347 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="manifest" href="./manifest.json?v=2">
-    <meta name="theme-color" content="#0077ff">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="./manifest.json?v=3">
+<meta name="theme-color" content="#0077ff">
 
-    <title>근무 시간 캘린더</title>
+<title>근무 시간 캘린더</title>
 
-    <style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 10px;
-        background: #f5f6f8;
-    }
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 10px;
+  background: #f5f6f8;
+}
 
-    h1 {
-        text-align: center;
-        margin-bottom: 10px;
-    }
+h1 {
+  text-align: center;
+  margin-bottom: 10px;
+}
 
-    .header {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 15px;
-        margin-bottom: 10px;
-    }
+.header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 10px;
+}
 
-    /* 요일 */
-    .weekdays {
-        display: grid;
-        grid-template-columns: repeat(7, 1fr);
-        text-align: center;
-        font-weight: bold;
-        margin-bottom: 5px;
-    }
+/* 요일 */
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
 
-    .sun { color: red; }
-    .sat { color: blue; }
+.sun { color: red; }
+.sat { color: blue; }
 
-    #calendar {
-        display: grid;
-        grid-template-columns: repeat(7, 1fr);
-        gap: 5px;
-    }
+#calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+}
 
-    .day {
-        background: white;
-        border-radius: 6px;
-        padding: 6px;
-        min-height: 90px;
-        cursor: pointer;
-        font-size: 14px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
+.day {
+  background: white;
+  border-radius: 6px;
+  padding: 6px;
+  min-height: 95px;
+  cursor: pointer;
+  font-size: 14px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
 
-    .day strong {
-        display: block;
-        margin-bottom: 4px;
-    }
+.day strong {
+  display: block;
+  margin-bottom: 4px;
+}
 
-    .sun-day strong { color: red; }
-    .sat-day strong { color: blue; }
+.sun-day strong { color: red; }
+.sat-day strong { color: blue; }
 
-    .work-time {
-        font-size: 12px;
-        color: #0077ff;
-    }
+/* 오늘 날짜 표시 */
+.today strong {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid #ff0000;
+  box-sizing: border-box;
+}
+/* 시간 */
+.work-time {
+  font-size: 12px;
+  color: #0077ff;
+}
 
-        .work-duration {
-            font-size: 12px;
-            color: #555;
-            margin-top: 4px;
-        }
+.work-duration {
+  font-size: 12px;
+  color: #0077ff;
+  margin-top: 4px;
+}
 
-    /* 하단 총합 카드 */
-    .total {
-        margin-top: 20px;
-        background: #ffffff;
-        padding: 15px;
-        border-radius: 12px;
-        text-align: center;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-    }
+/* 하단 카드 */
+.total {
+  margin-top: 20px;
+  background: white;
+  padding: 15px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
 
-    .total h3 {
-        margin: 0 0 6px;
-        color: #555;
-    }
+.total h3 {
+  margin: 0 0 6px;
+  color: #555;
+}
 
-    .total span {
-        font-size: 22px;
-        font-weight: bold;
-        color: #0077ff;
-    }
+.total span {
+  font-size: 22px;
+  font-weight: bold;
+  color: #0077ff;
+}
 
-    /* 모달 */
-    .modal {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(0,0,0,0.4);
-    }
+/* 모달 */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+}
 
-    .modal-content {
-        background: white;
-        padding: 20px;
-        width: 90%;
-        max-width: 300px;
-        margin: 120px auto;
-        border-radius: 10px;
-    }
+.modal-content {
+  background: white;
+  padding: 20px;
+  width: 90%;
+  max-width: 300px;
+  margin: 120px auto;
+  border-radius: 10px;
+}
 
-    .modal-content input {
-        width: 100%;
-        margin: 5px 0 10px;
-    }
+.modal-content input {
+  width: 100%;
+  margin: 5px 0 10px;
+}
 
-    .modal-content button {
-        width: 100%;
-        margin-top: 6px;
-    }
+.modal-content button {
+  width: 100%;
+  margin-top: 6px;
+}
 
-    .delete-btn {
-        background: #ff4d4d;
-        color: white;
-        border: none;
-    }
+.delete-btn {
+  background: #ff4d4d;
+  color: white;
+  border: none;
+}
 
-    /* 📱 모바일 표시 */
-    @media (max-width: 600px) {
-        .pc { display: none; }
-    }
-
-    @media (min-width: 601px) {
-        .mobile { display: none; }
-    }
-    </style>
+/* 모바일 */
+@media (max-width: 600px) {
+  .pc { display: none; }
+}
+@media (min-width: 601px) {
+  .mobile { display: none; }
+}
+</style>
 </head>
 
 <body>
 
-    <h1 onclick="location.reload(true);">근무 시간 캘린더</h1>
+<h1>근무 시간 캘린더</h1>
 
-    <div class="header">
-    <button id="prev">◀</button>
-    <h2 id="month"></h2>
-    <button id="next">▶</button>
-    </div>
+<div class="header">
+  <button id="prev">◀</button>
+  <h2 id="month"></h2>
+  <button id="next">▶</button>
+</div>
 
-    <div class="weekdays">
-    <div class="sun">일</div>
-    <div>월</div>
-    <div>화</div>
-    <div>수</div>
-    <div>목</div>
-    <div>금</div>
-    <div class="sat">토</div>
-    </div>
+<div class="weekdays">
+  <div class="sun">일</div>
+  <div>월</div>
+  <div>화</div>
+  <div>수</div>
+  <div>목</div>
+  <div>금</div>
+  <div class="sat">토</div>
+</div>
 
-    <div id="calendar"></div>
+<div id="calendar"></div>
 
-    <div class="total">
-    <h3>이번 달 총 근무시간</h3>
-    <span id="totalTime">0시간 0분</span>
-    </div>
+<div class="total">
+  <h3>전월 25일 ~ 당월 25일 총 근무시간</h3>
+  <span id="totalTime">0시간 0분</span>
+</div>
 
-    <!-- 모달 -->
-    <div id="modal" class="modal">
-    <div class="modal-content">
-        <h3 id="modalDate"></h3>
-        시작 시간
-        <input type="time" id="startTime">
-        종료 시간
-        <input type="time" id="endTime">
-        <button id="save">저장</button>
-        <button class="delete-btn" id="delete">하루 근무 삭제</button>
-        <button onclick="closeModal()">닫기</button>
-    </div>
-    </div>
+<!-- 모달 -->
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <h3 id="modalDate"></h3>
+    시작 시간
+    <input type="time" id="startTime">
+    종료 시간
+    <input type="time" id="endTime">
+    <button id="save">저장</button>
+    <button class="delete-btn" id="delete">하루 근무 삭제</button>
+    <button onclick="closeModal()">닫기</button>
+  </div>
+</div>
 
-    <script>
-    let current = new Date();
-    let selectedDate = "";
-    const workData = JSON.parse(localStorage.getItem("workData")) || {};
+<script>
+let current = new Date();
+let selectedDate = "";
+const workData = JSON.parse(localStorage.getItem("workData")) || {};
 
-    // DOM 요소를 명시적으로 바인딩 (전역 변수 의존 제거)
-    const calendar = document.getElementById('calendar');
-    const month = document.getElementById('month');
-    const modal = document.getElementById('modal');
-    const modalDate = document.getElementById('modalDate');
-    const startTime = document.getElementById('startTime');
-    const endTime = document.getElementById('endTime');
-    const saveBtn = document.getElementById('save');
-    const deleteBtn = document.getElementById('delete');
-    const totalTime = document.getElementById('totalTime');
-    const prevBtn = document.getElementById('prev');
-    const nextBtn = document.getElementById('next');
+const calendar = document.getElementById("calendar");
+const month = document.getElementById("month");
+const modal = document.getElementById("modal");
+const modalDate = document.getElementById("modalDate");
+const startTime = document.getElementById("startTime");
+const endTime = document.getElementById("endTime");
+const saveBtn = document.getElementById("save");
+const deleteBtn = document.getElementById("delete");
+const totalTime = document.getElementById("totalTime");
+const prevBtn = document.getElementById("prev");
+const nextBtn = document.getElementById("next");
 
-    function saveData() {
-        localStorage.setItem("workData", JSON.stringify(workData));
+function saveData() {
+  localStorage.setItem("workData", JSON.stringify(workData));
+}
+
+function calcDuration(start, end) {
+  const [sh, sm] = start.split(":").map(Number);
+  const [eh, em] = end.split(":").map(Number);
+  let min = (eh*60+em) - (sh*60+sm);
+  if (min < 0) min += 24*60;
+  return { min };
+}
+
+function renderCalendar() {
+  calendar.innerHTML = "";
+  const y = current.getFullYear();
+  const m = current.getMonth();
+
+  month.textContent = `${y}년 ${m+1}월`;
+
+  const today = new Date();
+  const ty = today.getFullYear();
+  const tm = today.getMonth();
+  const td = today.getDate();
+
+  const firstDay = new Date(y, m, 1).getDay();
+  const lastDate = new Date(y, m+1, 0).getDate();
+
+  for (let i=0;i<firstDay;i++) {
+    calendar.appendChild(document.createElement("div"));
+  }
+
+  for (let d=1; d<=lastDate; d++) {
+    const date = new Date(y, m, d);
+    const dow = date.getDay();
+    const dateStr = `${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+
+    const div = document.createElement("div");
+    div.className = "day";
+
+    if (dow===0) div.classList.add("sun-day");
+    if (dow===6) div.classList.add("sat-day");
+    if (y===ty && m===tm && d===td) div.classList.add("today");
+
+    div.innerHTML = `<strong>${d}</strong>`;
+
+    if (workData[dateStr]) {
+      const w = workData[dateStr];
+      const durMin = calcDuration(w.start, w.end).min;
+      div.innerHTML += `
+        <div class="work-time pc">${w.start} ~ ${w.end}</div>
+        <div class="work-time mobile">${w.start}<br>${w.end}</div>
+        <div class="work-duration pc">${Math.floor(durMin/60)}시간 ${durMin%60}분</div>
+        <div class="work-duration mobile">${Math.floor(durMin/60)}시간<br>${durMin%60}분</div>
+      `;
     }
 
-    function calcDuration(start, end) {
-        const [sh, sm] = start.split(":").map(Number);
-        const [eh, em] = end.split(":").map(Number);
-        let min = (eh*60+em) - (sh*60+sm);
-        // 종료가 시작보다 빠르면(익일로 간주) 24시간을 더함
-        if (min < 0) min += 24*60;
-        return {
-        h: Math.floor(min / 60),
-        m: min % 60,
-        min
-        };
-    }
+    div.onclick = () => openModal(dateStr);
+    calendar.appendChild(div);
+  }
 
-    function renderCalendar() {
-        calendar.innerHTML = "";
-        const y = current.getFullYear();
-        const m = current.getMonth();
+  calcTotal();
+}
 
-        month.textContent = `${y}년 ${m + 1}월`;
+function openModal(date) {
+  selectedDate = date;
+  modalDate.textContent = date;
+  startTime.value = workData[date]?.start || "";
+  endTime.value = workData[date]?.end || "";
+  modal.style.display = "block";
+}
 
-        const firstDay = new Date(y, m, 1).getDay();
-        const lastDate = new Date(y, m + 1, 0).getDate();
+function closeModal() {
+  modal.style.display = "none";
+}
 
-        for (let i = 0; i < firstDay; i++) {
-        calendar.appendChild(document.createElement("div"));
-        }
-
-        for (let d = 1; d <= lastDate; d++) {
-        const date = new Date(y, m, d);
-        const dayOfWeek = date.getDay();
-
-        const dateStr =
-            `${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
-
-        const div = document.createElement("div");
-        div.className = "day";
-
-        if (dayOfWeek === 0) div.classList.add("sun-day");
-        if (dayOfWeek === 6) div.classList.add("sat-day");
-
-        div.innerHTML = `<strong>${d}</strong>`;
-
-        if (workData[dateStr]) {
-            const w = workData[dateStr];
-            const dur = calcDuration(w.start, w.end);
-
-            div.innerHTML += `
-            <div class="work-time pc">${w.start} ~ ${w.end}</div>
-
-            <div class="work-time mobile">
-                ${w.start}<br>${w.end}
-            </div>
-
-            <div class="work-duration pc">
-                ${dur.h}시간 ${dur.m}분
-            </div>
-
-            <div class="work-duration mobile">
-                ${dur.h}시간<br>${dur.m}분
-            </div>
-            `;
-        }
-
-        div.onclick = () => openModal(dateStr);
-        calendar.appendChild(div);
-        }
-
-        calcTotal();
-    }
-
-    function openModal(date) {
-        selectedDate = date;
-        modalDate.textContent = date;
-        startTime.value = workData[date]?.start || "";
-        endTime.value = workData[date]?.end || "";
-        modal.style.display = "block";
-    }
-
-    function closeModal() {
-        modal.style.display = "none";
-    }
-
-    // 이벤트 바인딩: 예약어 변수 사용 제거
-    saveBtn.onclick = () => {
-        if (startTime.value && endTime.value) {
-        workData[selectedDate] = {
-            start: startTime.value,
-            end: endTime.value
-        };
-        saveData();
-        closeModal();
-        renderCalendar();
-        }
-    };
-
-    deleteBtn.onclick = () => {
-        if (workData[selectedDate]) {
-        delete workData[selectedDate];
-        saveData();
-        closeModal();
-        renderCalendar();
-        }
-    };
-
-    function calcTotal() {
-        let totalMin = 0;
-        const y = current.getFullYear();
-        const m = String(current.getMonth()+1).padStart(2,"0");
-
-        for (const date in workData) {
-        if (date.startsWith(`${y}-${m}`)) {
-            totalMin += calcDuration(
-            workData[date].start,
-            workData[date].end
-            ).min;
-        }
-        }
-
-        totalTime.textContent =
-        `${Math.floor(totalMin/60)}시간 ${totalMin%60}분`;
-    }
-
-    prevBtn.onclick = () => {
-        current.setMonth(current.getMonth() - 1);
-        renderCalendar();
-    };
-
-    nextBtn.onclick = () => {
-        current.setMonth(current.getMonth() + 1);
-        renderCalendar();
-    };
-
+saveBtn.onclick = () => {
+  if (startTime.value && endTime.value) {
+    workData[selectedDate] = { start: startTime.value, end: endTime.value };
+    saveData();
+    closeModal();
     renderCalendar();
-    </script>
-    
-    <script>
-        if ("serviceWorker" in navigator) {
-            navigator.serviceWorker.register("./sw.js");
-        }
-    </script>
+  }
+};
 
+deleteBtn.onclick = () => {
+  if (workData[selectedDate]) {
+    delete workData[selectedDate];
+    saveData();
+    closeModal();
+    renderCalendar();
+  }
+};
+
+/* 🔥 총합계 계산: 전월 25일 ~ 이번달 25일 */
+function calcTotal() {
+  let totalMin = 0;
+
+  const y = current.getFullYear();
+  const m = current.getMonth();
+
+  const start = new Date(y, m-1, 25);
+  const end = new Date(y, m, 26);
+
+  for (const date in workData) {
+    const d = new Date(date);
+    if (d >= start && d < end) {
+      totalMin += calcDuration(workData[date].start, workData[date].end).min;
+    }
+  }
+
+  totalTime.textContent =
+    `${Math.floor(totalMin/60)}시간 ${totalMin%60}분`;
+}
+
+prevBtn.onclick = () => {
+  current.setMonth(current.getMonth()-1);
+  renderCalendar();
+};
+
+nextBtn.onclick = () => {
+  current.setMonth(current.getMonth()+1);
+  renderCalendar();
+};
+
+renderCalendar();
+</script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("./sw.js");
+}
+</script>
 
 </body>
 </html>
