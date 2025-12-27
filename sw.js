@@ -1,4 +1,4 @@
-const CACHE_NAME = "work-calendar-v3";
+const CACHE_NAME = "work-calendar-v4";
 const FILES_TO_CACHE = [
   "./",
   "./index.html",
