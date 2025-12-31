@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="manifest" href="./manifest.json?v=4">
+<link rel="manifest" href="./manifest.json?v=5">
 <meta name="theme-color" content="#0077ff">
 
 <title>근무 시간 캘린더</title>
@@ -175,7 +175,7 @@ h1 {
 <div id="calendar"></div>
 
 <div class="total">
-  <h3>전월 25일 ~ 당월 25일 총 근무시간</h3>
+  <h3>전월 25일 ~ 당월 24일 총 근무시간</h3>
   <span id="totalTime">0시간 0분</span>
 </div>
 
@@ -310,8 +310,8 @@ function calcTotal() {
   const y = current.getFullYear();
   const m = current.getMonth();
 
-  const start = new Date(y, m-1, 26);
-  const end = new Date(y, m, 26);
+  const start = new Date(y, m-1, 25);
+  const end = new Date(y, m, 25);
 
   for (const date in workData) {
     const d = new Date(date);
